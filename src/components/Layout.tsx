@@ -10,7 +10,7 @@ import { useActions } from '@/context/ActionsContext';
 import { Button } from '@/components/ui/button';
 import { VersionCheck } from '@/components/VersionCheck';
 
-const APP_TITLE = 'Forderungsmanagement';
+const APP_TITLE = 'Forderungsmanagement Kopie2';
 const APP_ID = '6a61dc5ba21f30738c093acf';
 const APPGROUP_ID = '6a61dc5ae3fd495568bf2a91';
 
