@@ -89,7 +89,11 @@ export function Layout() {
   }, [onDashboard]);
 
   return (
-    <div className="min-h-screen bg-background">
+    // Der body ist das App-Frame-Grid (Vorgabe Widget-Team, s. index.css):
+    // top/left/center-Areas. #root und dieser Wrapper sind display:contents,
+    // damit Header, Drawer und Content direkte Grid-Items werden. Die
+    // Area-Zuordnung von Header/Drawer liegt in index.css.
+    <div className="contents">
       {!IS_EMBED && (
         <la-header-bar-widget title={APP_TITLE} app-id={APP_ID}>
           {/* app-id auch am Menü selbst: erst mit eigenem App-Kontext zeigt
@@ -117,6 +121,9 @@ export function Layout() {
         </>
       )}
 
+      {/* Drawer = Grid-Area "left" (Zuordnung in index.css): In-Flow-Spalte,
+          die den Content selbst verdrängt; eingeklappt ein schmaler Streifen
+          mit Hover-Peek. Mobil ein Fixed-Overlay (verlässt das Grid). */}
       {!IS_EMBED && (
         <la-drawer ref={drawerRef}>
           {/* Darstellung-Umschalter — identisch zur Datenverwaltung: der
@@ -166,12 +173,7 @@ export function Layout() {
         </la-drawer>
       )}
 
-      {/* Der Drawer ist ein Overlay und schiebt den Content nie selbst zur
-          Seite — er publiziert seine Breite als --la-drawer-rect-width auf
-          <html>; ab md rückt der Content darüber ein (mobil deckt der Drawer
-          den Viewport, dort kein Offset). Ohne Widgets (Embed, Loader-Fehler)
-          greift der 0px-Fallback. */}
-      <div className={IS_EMBED ? "" : "md:pl-[var(--la-drawer-rect-width,0px)] transition-[padding-left] duration-200 motion-reduce:transition-none"}>
+      <div className="[grid-area:center] min-w-0">
         <main className={`max-w-screen-2xl ${IS_EMBED ? "p-2 lg:p-4" : "p-6 lg:p-8"}`}>
           {authError ? (
             <div className="flex flex-col items-center justify-center py-24 gap-4">

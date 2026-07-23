@@ -102,6 +102,10 @@
   --z-scrim: 20;     /* mobile sidebar backdrop             */
   --z-sidebar: 30;   /* sidebar                             */
   --z-chrome: 40;    /* top bar, header menus, chat widget  */
+  --z-header: 45;    /* la-header-bar: ÜBER dem Drawer (40, DOM-später!), da
+                        die geslotteten Menü-Panels (Apps/Profil) im Header-
+                        Stacking-Context leben und sonst UNTER dem Drawer
+                        aufgehen; UNTER --z-overlay, damit Dialoge ihn decken */
   --z-overlay: 50;   /* dialogs, drawers, record overlay    */
   --z-lightbox: 60;  /* media lightbox (above overlays)     */
   --z-drag: 100;     /* drag ghost (above everything)       */
@@ -201,26 +205,83 @@
 }
 
 /* ── LivingApps Chrome-Widgets (loader.js) ─────────────────────────────
- * Die Widgets bringen eigene z-Indizes im Shadow DOM mit (Header 100000,
- * Drawer-Overlay 50). Host-Styles auf dem Element schlagen die :host-
- * Defaults im Shadow DOM — so reihen wir sie in unsere z-Leiter ein,
- * damit Dialoge/Overlays (--z-overlay) das Chrome weiterhin abdecken. */
-la-header-bar-widget {
-  z-index: var(--z-chrome);
+ * Der Header bringt z-index 100000 im Shadow-:host mit — Host-Styles auf
+ * dem Element schlagen die :host-Defaults, so reiht er sich in unsere
+ * z-Leiter ein und Dialoge/Overlays (--z-overlay) decken ihn weiterhin ab.
+ * Der Drawer bekommt KEINEN Override mehr: Seit dem Widget-Release vom
+ * 23.07.2026 ist er auf Desktop eine In-Flow-Spalte (z 40 nur für den
+ * Hover-Peek) und mobil ein Fixed-Overlay (z 50) — beides liegt korrekt
+ * unter unseren Dialogen bzw. bewusst über dem Header. */
+/* App-Frame-Grid — offizielles Host-Layout laut Widget-Team: der body
+ * spannt die Areas top (Header), left (Drawer), center (Content) auf.
+ * min-height lässt die 1fr-Zeile den Viewport füllen; der Seitenhintergrund
+ * wandert vom früheren Layout-Wrapper hierher. #root und der Layout-Wrapper
+ * sind display:contents, damit die Chrome-Elemente direkte Grid-Items sind. */
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100dvh;
+  background: var(--background);
+  display: grid;
+  gap: 0;
+  grid-template-areas: "top top top" "left center right" "bottom bottom bottom";
+  grid-template-columns: minmax(0, max-content) minmax(0, 1fr) max-content;
+  grid-template-rows: auto 1fr auto;
 }
-la-drawer[data-overlay] {
-  z-index: var(--z-sidebar);
+#root {
+  display: contents;
+}
+/* Direktkinder ohne eigene Zuordnung (öffentliche Seiten außerhalb des
+ * Layouts) gehören in die Mitte; fixed-positionierte Portale sind ohnehin
+ * aus dem Fluss. Auf dem display:contents-Layout-Wrapper ist grid-area
+ * wirkungslos — die Regel trifft also nur echte Boxen. */
+#root > * {
+  grid-area: center;
+}
+la-header-bar-widget {
+  grid-area: top;
+  /* NICHT --z-chrome (40): der Drawer hat auf Desktop ebenfalls z 40 und
+   * steht im DOM später — bei Gleichstand malt er ÜBER die Menü-Panels,
+   * die im Header-Subtree leben („Panel öffnet unter dem Drawer"). */
+  z-index: var(--z-header);
+}
+la-drawer {
+  grid-area: left;
+}
+/* Vertrag der Widget-Suite: Der Drawer liegt IMMER unter der Header-Bar
+ * (die Menü-Panels des Headers legen sich über die Drawer-Spalte). Auf
+ * Desktop gilt das schon (40 < 45); mobil gibt der Drawer sich selbst
+ * z 50 und läge über unserem abgesenkten Header — auf 44 gekappt bleibt
+ * er über dem Content, unter Header (45) und unter Dialogen (50). */
+@media (max-width: 767.98px) {
+  la-drawer[data-overlay] {
+    z-index: 44;
+  }
 }
 
-/* Pre-Upgrade (Loader noch nicht geladen): Header-Platzhalter hält die
- * Höhe (Werte = placeholderStyle des Widgets), der Drawer bleibt samt
- * geslottetem Inhalt unsichtbar statt als rohes Light-DOM zu flackern. */
-la-header-bar-widget:not(:defined) {
-  display: block;
-  min-height: 77px;
-  background: #fff;
-  border-bottom: 1px solid #e5e7eb;
+/* Desktop: Der Drawer ist Grid-Item der "left"-Area. Sein
+ * :host{height:100%} kollabiert ohne definite Track-Höhe zu 0 und
+ * unterbindet das Grid-Stretching — height:auto (Host-Style schlägt
+ * :host) lässt ihn auf Zeilenhöhe strecken. Mobil NICHT überschreiben:
+ * dort ist er ein Fixed-Overlay mit height:100dvh. */
+@media (min-width: 768px) {
+  la-drawer[data-overlay] {
+    height: auto;
+  }
 }
+
+/* Pre-Upgrade-Platzhalter (CLS-Schutz) kommen von den OFFIZIELLEN
+ * Placeholder-Assets der Library (in index.html eingebunden): Header-Höhe
+ * und Drawer-Spaltenbreite inkl. des persistierten Collapse-Zustands aus
+ * localStorage. Hier nur die Ergänzung, die das offizielle CSS auslässt:
+ * den geslotteten Light-DOM-Inhalt bis zum Upgrade unsichtbar halten
+ * (visibility erhält die reservierte Box) und mobil — wo der fertige
+ * Drawer ein Fixed-Overlay ohne Footprint ist — gar keinen Platz nehmen. */
 la-drawer:not(:defined) {
-  display: none;
+  visibility: hidden;
+}
+@media (max-width: 767.98px) {
+  la-drawer:not(:defined) {
+    display: none;
+  }
 }
