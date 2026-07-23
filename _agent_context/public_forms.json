@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "forms": [
+    {
+      "entity": "ueberzahlungsbearbeitung",
+      "app_id": "6a61dc5ba21f30738c093acf",
+      "path": "/rest/apps/6a61dc5ba21f30738c093acf/records",
+      "allowed_fields": [
+        "ueberzahlter_betrag",
+        "eingangsdatum_zahlung",
+        "massnahme",
+        "bearbeitungsstatus",
+        "bearbeitungsdatum",
+        "kontoinhaber_vorname",
+        "kontoinhaber_nachname",
+        "iban",
+        "bic",
+        "bank",
+        "bemerkungen"
+      ],
+      "pow": true,
+      "pow_difficulty": 50000,
+      "title": "Überzahlungsbearbeitung — Formular"
+    },
+    {
+      "entity": "forderungserfassung",
+      "app_id": "6a61dc5ba2d980b0b5e2eba6",
+      "path": "/rest/apps/6a61dc5ba2d980b0b5e2eba6/records",
+      "allowed_fields": [
+        "rechnungsnummer",
+        "rechnungsdatum",
+        "faelligkeitsdatum",
+        "rechnungsbetrag",
+        "gezahlter_betrag",
+        "zahlungsstatus",
+        "notizen_forderung"
+      ],
+      "pow": true,
+      "pow_difficulty": 50000,
+      "title": "Forderungserfassung — Formular"
+    },
+    {
+      "entity": "debitor",
+      "app_id": "6a61dc5ba6b5f055c1d1f5f9",
+      "path": "/rest/apps/6a61dc5ba6b5f055c1d1f5f9/records",
+      "allowed_fields": [
+        "kundennummer",
+        "schuldner_vorname",
+        "schuldner_nachname",
+        "unternehmen",
+        "letzter_vorgang",
+        "strasse",
+        "hausnummer",
+        "postleitzahl",
+        "ort",
+        "email",
+        "telefon",
+        "notizen_schuldner"
+      ],
+      "pow": true,
+      "pow_difficulty": 50000,
+      "title": "Debitor — Formular"
+    }
+  ]
+}
