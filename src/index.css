@@ -238,6 +238,19 @@ body {
 #root > * {
   grid-area: center;
 }
+/* Sonners Toast-Wrapper (<section aria-live aria-label="Notifications…">)
+ * ist ein #root-Direktkind und wird durch die Regel darüber zum Grid-Item:
+ * per Default-stretch spannte er sich unsichtbar über die GESAMTE Center-
+ * Area und schluckte als DOM-späteres Geschwister jeden Klick in den
+ * Inhalt. Der Wrapper wird klick-transparent; das fixed-positionierte
+ * <ol data-sonner-toaster> darunter reaktiviert Pointer-Events, damit
+ * Toast-Buttons (Undo, Schließen) klickbar bleiben. */
+#root > section[aria-live] {
+  pointer-events: none;
+}
+#root > section[aria-live] > * {
+  pointer-events: auto;
+}
 la-header-bar-widget {
   grid-area: top;
   /* NICHT --z-chrome (40): der Drawer hat auf Desktop ebenfalls z 40 und

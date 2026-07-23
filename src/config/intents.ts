@@ -9,12 +9,13 @@
  * ONLY write inside the marker blocks — everything outside is scaffold and is
  * overwritten on the next /build/update.
  *
- *   // <custom:intent-imports>
+ *   <custom:intent-imports>
  *   import { IconCalendarPlus } from '@tabler/icons-react';
- *   // </custom:intent-imports>
+ *   </custom:intent-imports>
  *   …
- *   // <custom:intents>
-  // </custom:intents>
+ *   <custom:intents>
+ *   { path: '/intents/neue-buchung', label: 'Neue Buchung', icon: IconCalendarPlus, description: 'Buchung in 3 Schritten anlegen' },
+ *   </custom:intents>
  */
 import type { ComponentType } from 'react';
 
@@ -34,6 +35,8 @@ export interface IntentLink {
 
 export const INTENTS: IntentLink[] = [
   // <custom:intents>
+  { path: '/intents/forderung-erfassen', label: 'Forderung erfassen' },
+  { path: '/intents/ueberzahlung-bearbeiten', label: 'Ueberzahlung bearbeiten' },
   // </custom:intents>
 ];
 
