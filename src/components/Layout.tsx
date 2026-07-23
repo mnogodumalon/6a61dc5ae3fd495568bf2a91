@@ -140,7 +140,10 @@ export function Layout() {
 
           <ActionsSidebar />
 
-          <div slot="footer" className="py-4 space-y-3">
+          {/* Bewusst NICHT im footer-Slot: sticky fraß er mobile Höhe, sodass
+              Abläufe/Werkzeuge erst nach Scrollen sichtbar wurden. Als letztes
+              Kind im Default-Slot scrollt der Block mit dem Inhalt. */}
+          <div className="py-4 space-y-3">
             <a
               href="/claude/static/lab.html"
               className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
